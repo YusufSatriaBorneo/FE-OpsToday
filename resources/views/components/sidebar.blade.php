@@ -3,7 +3,7 @@
     <div class="app-brand demo">
         <a href="{{ route('admin.index') }}" class="app-brand-link">
             <span class="app-brand-logo demo me-1">
-                <img src="https://iconape.com/wp-content/png_logo_vector/pt-kaltim-prima-coal-logo.png" alt="Logo" width="70" height="44">
+                <img src="https://drive.google.com/uc?export=view&id=1RqnfaeWtjNDRgK3PAsPDzR1oO2S8QjzM" alt="Logo" width="70" height="44">
             </span>
 
         </a>
