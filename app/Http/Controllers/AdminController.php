@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Auth;
 
+/** 
+ * Controller untuk halaman admin
+ * Fitur :
+ * 1. Dashboard
+ * 2. Manage Users
+ * 3. Manage Tickets
+ * 4. Engineer Activities
+ * 5. Engineer Leaves
+ * 6. Engineer On Progress
+ * Author: Bayu
+ * Creation Date: 2024-08-27
+ */
 class AdminController extends Controller
 {
     public function index()
