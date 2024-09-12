@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EngineerController;
+use App\Http\Controllers\EngineerLeaveController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 
@@ -70,3 +71,4 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 // Untuk Engineer
 Route::get('engineer/dashboard', [EngineerController::class, 'index'])->name('engineer.dashboard')->middleware('auth');
 Route::post('engineer/activities', [EngineerController::class, 'store'])->name('engineer.activities.store')->middleware('auth');
+Route::get('/api/engineer-leaves', [EngineerLeaveController::class, 'index']);

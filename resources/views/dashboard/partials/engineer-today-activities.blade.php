@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="ms-3">
-                            <p class="mb-0">Completed Ticket</p>
+                            <p class="mb-0">Completed Ticket ({{ $currentMonth }})</p>
                             <h5 class="mb-0">{{ $completedTasksCount }}</h5>
                         </div>
                     </div>
@@ -90,55 +90,67 @@
                             </div>
                         </div>
                         <div class="ms-2"> <!-- Mengurangi margin -->
-                            <p class="mb-0">On Remote</p>
-                            <h5 class="mb-0">{{ $statusCounts['Hadir'] }}</h5>
+                            <p class="mb-0">On Leave</p>
+                            <h5 class="mb-0">{{ $engineerLeaves->count() }}</h5>
                         </div>
                     </div>
                 </div>
                 <!-- Card baru pertama -->
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-6">
                     <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah -->
-                        <div class="card-body text-nowrap">
-                            <h5 class="card-title mb-0 flex-wrap text-nowrap">Engineer On Leave</h5>
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Engineer</th>
-                                        <th>Leave Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Bayu</td>
-                                        <td>2023-09-12</td>
-                                    </tr>
-                                    <!-- Tambahkan data lainnya di sini -->
-                                </tbody>
-                            </table>
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">Engineer On Leave</h5>
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> <!-- Membatasi tinggi dan menambahkan scroll -->
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Engineer</th>
+                                            <th>Leave Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="engineer-leave-content">
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Card baru kedua -->
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-6">
                     <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah -->
-                        <div class="card-body text-nowrap">
-                            <h5 class="card-title mb-0 flex-wrap text-nowrap">Extra Miles Engineer</h5>
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Engineer</th>
-                                        <th>Activity</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Oby</td>
-                                        <td>Task at GOR</td>
-                                    </tr>
-                                    <!-- Tambahkan data lainnya di sini -->
-                                </tbody>
-                            </table>
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">Extra Miles Engineer</h5>
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> <!-- Membatasi tinggi dan menambahkan scroll -->
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Engineer</th>
+                                            <th>Activity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Oby</td>
+                                            <td>Task at GOR</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Oby</td>
+                                            <td>Task at GOR</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Oby</td>
+                                            <td>Task at GOR</td>
+                                        </tr>
+                                          <tr>
+                                            <td>Oby</td>
+                                            <td>Task at GOR</td>
+                                        </tr>
+                                        <!-- Tambahkan data lainnya di sini -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,3 +186,6 @@
         </div>
     </div>
 </div>
+<script>
+
+</script>

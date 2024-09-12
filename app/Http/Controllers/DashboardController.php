@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Mail\TaskOverloadMail;
 use App\Models\EngineerActivities;
+use App\Models\EngineerLeave;
 use App\Models\EngineerTask;
 use App\Models\User;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
@@ -55,6 +56,24 @@ class DashboardController extends Controller
                 $statusCounts['Absen']++;
             }
         }
+        // Ambil data dari EngineerLeaves
+        $currentDate = Carbon::now()->toDateString();
+        $engineerLeaves = EngineerLeave::where('start_date', '<=', $currentDate)
+            ->where('end_date', '>=', $currentDate)
+            ->get();
+
+        // Buat array engineer_ids dari EngineerLeave
+        $engineerIdsOnLeave = $engineerLeaves->pluck('engineer_id')->toArray();
+
+        // Kurangi jumlah orang yang hadir jika fsCardNo cocok dengan engineer_id
+        foreach ($data as $item) {
+            if ($item['status1'] === 'Absen' && in_array($item['fsCardNo'], $engineerIdsOnLeave)) {
+                $statusCounts['Absen']--;
+            }
+        }
+                // Dapatkan nama bulan saat ini
+                $currentMonth = Carbon::now()->format('F');
+
         $engineers = User::all(); // Ambil semua engineer
 
         // Ambil aktivitas engineer yang sedang berlangsung
@@ -77,7 +96,7 @@ class DashboardController extends Controller
 
         $engineerNames = User::pluck('name', 'engineer_id');
 
-        return view('dashboard.index', compact('chart', 'topEngineer', 'topTicketCount', 'engineerTicketCount', 'data', 'statusCounts', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount'));
+        return view('dashboard.index', compact('chart', 'topEngineer', 'topTicketCount', 'engineerTicketCount', 'data', 'statusCounts', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'engineerLeaves', 'currentMonth'));
     }
     public function getDashboardContent()
     {
