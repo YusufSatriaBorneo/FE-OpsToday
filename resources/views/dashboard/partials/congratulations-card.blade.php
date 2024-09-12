@@ -5,10 +5,10 @@
             @php
             $engineerName = $engineerNames[$engineerOfTheDay->engineer_id] ?? 'Unknown';
             @endphp
-            <h5 class="card-title mb-0 flex-wrap text-nowrap">Congratulations {{ $engineerName }} 🎉</h5>
-            <p class="mb-2">Has Completed</p>
+            <h5 class="card-title mb-0 flex-wrap text-nowrap">Awesome job, {{ $engineerName }}</h5>
+            <p class="mb-2">You've Completed</p>
             <h4 class="text-primary mb-0">{{ $engineerOfTheDay->count }} Tickets</h4>
-            <p class="mb-2">and has become the Engineer of The Day 🚀</p>
+            <p class="mb-2">and earned the title of Engineer of The Day 🌟🎉</p>
             <a href="javascript:;" class="btn btn-sm btn-primary">View</a>
             @else
             <p>No Data</p>
