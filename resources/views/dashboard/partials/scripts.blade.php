@@ -27,6 +27,31 @@
         });
     });
 </script>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+        refreshEngineerOnLeave();
+    });
+    
+    function refreshEngineerOnLeave() {
+        fetch('/api/engineer-leaves')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('engineer-leave-content');
+                tbody.innerHTML = ''; // Kosongkan konten sebelum menambahkan data baru
+                
+                data.forEach(leave => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${leave.engineer_name}</td>
+                        <td>${leave.start_date} - ${leave.end_date}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error refreshing Engineer On Leave:', error));
+    }
+    setInterval(refreshEngineerOnLeave, 3000); // Refresh setiap 30 detik
+</script>
 <script src="{{ $chart->cdn() }}"></script>
 {{ $chart->script() }}
 @endpush
