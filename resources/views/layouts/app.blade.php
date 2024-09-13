@@ -46,19 +46,20 @@
     </div>
 
     <!-- Core JS -->
-    <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-    <script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('assets/vendor/js/menu.js') }}"></script>
-    <!-- Vendors JS -->
-    <script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
-    <!-- Main JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-    <!-- Page JS -->
-    <script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+<!-- Core JS -->
+<script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}" defer></script>
+<script src="{{ asset('assets/vendor/libs/popper/popper.js') }}" defer></script>
+<script src="{{ asset('assets/vendor/js/bootstrap.js') }}" defer></script>
+<script src="{{ asset('assets/vendor/libs/node-waves/node-waves.js') }}" defer></script>
+<script src="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}" defer></script>
+<script src="{{ asset('assets/vendor/js/menu.js') }}" defer></script>
+<!-- Vendors JS -->
+<script src="{{ asset('assets/vendor/libs/apex-charts/apexcharts.js') }}" defer></script>
+<!-- Main JS -->
+<script src="{{ asset('assets/js/main.js') }}" defer></script>
+<!-- Page JS -->
+<script src="{{ asset('assets/js/dashboards-analytics.js') }}" defer></script>
+<script async defer src="https://buttons.github.io/buttons.js"></script>
     @stack('scripts')
 </body>
 

@@ -36,43 +36,13 @@ class DashboardController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
         $inProgressTasksCount = EngineerTask::where('status', 'Not Started')->count();
-
-        // Fungsi Fingerprint
-        $response = Http::get('http://localhost:3000/api/absence');
-        $data = $response->successful() ? $response->json() : [];
-
-        //Rekap jumlah hadir
-        $statusCounts = [
-            'Hadir' => 0,
-            'Keluar' => 0,
-            'Absen' => 0
-        ];
-        foreach ($data as $item) {
-            if ($item['status1'] === 'Hadir') {
-                $statusCounts['Hadir']++;
-            } elseif ($item['status1'] === 'Keluar') {
-                $statusCounts['Keluar']++;
-            } else {
-                $statusCounts['Absen']++;
-            }
-        }
+        
         // Ambil data dari EngineerLeaves
         $currentDate = Carbon::now()->toDateString();
-        $engineerLeaves = EngineerLeave::where('start_date', '<=', $currentDate)
-            ->where('end_date', '>=', $currentDate)
-            ->get();
 
-        // Buat array engineer_ids dari EngineerLeave
-        $engineerIdsOnLeave = $engineerLeaves->pluck('engineer_id')->toArray();
 
-        // Kurangi jumlah orang yang hadir jika fsCardNo cocok dengan engineer_id
-        foreach ($data as $item) {
-            if ($item['status1'] === 'Absen' && in_array($item['fsCardNo'], $engineerIdsOnLeave)) {
-                $statusCounts['Absen']--;
-            }
-        }
-                // Dapatkan nama bulan saat ini
-                $currentMonth = Carbon::now()->format('F');
+        // Dapatkan nama bulan saat ini
+        $currentMonth = Carbon::now()->format('F');
 
         $engineers = User::all(); // Ambil semua engineer
 
@@ -96,7 +66,7 @@ class DashboardController extends Controller
 
         $engineerNames = User::pluck('name', 'engineer_id');
 
-        return view('dashboard.index', compact('chart', 'topEngineer', 'topTicketCount', 'engineerTicketCount', 'data', 'statusCounts', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'engineerLeaves', 'currentMonth'));
+        return view('dashboard.index', compact('topEngineer', 'topTicketCount', 'engineerTicketCount', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'currentMonth'));
     }
     public function getDashboardContent()
     {
@@ -110,5 +80,45 @@ class DashboardController extends Controller
             'engineerTodayActivities' => $engineerTodayActivities,
             'engineerCurrentTask' => $engineerCurrentTask,
         ]);
+    }
+    public function statusCount()
+    {
+        // Ambil data dari API eksternal
+        $response = Http::get('http://localhost:3000/api/absence');
+        $data = $response->successful() ? $response->json() : [];
+
+        // Rekap jumlah hadir, keluar, dan absen
+        $statusCounts = [
+            'Hadir' => 0,
+            'Keluar' => 0,
+            'Absen' => 0
+        ];
+
+        foreach ($data as $item) {
+            if ($item['status1'] === 'Hadir') {
+                $statusCounts['Hadir']++;
+            } elseif ($item['status1'] === 'Keluar') {
+                $statusCounts['Keluar']++;
+            } elseif ($item['status1'] === 'Absen') {
+                $statusCounts['Absen']++;
+            }
+        }
+        // Ambil data dari EngineerLeaves
+        $currentDate = Carbon::now()->toDateString();
+        $engineerLeaves = EngineerLeave::where('start_date', '<=', $currentDate)
+            ->where('end_date', '>=', $currentDate)
+            ->get();
+
+        // Buat array engineer_ids dari EngineerLeave
+        $engineerIdsOnLeave = $engineerLeaves->pluck('engineer_id')->toArray();
+
+        // Kurangi jumlah orang yang absen jika fsCardNo cocok dengan engineer_id
+        foreach ($data as $item) {
+            if ($item['status1'] === 'Absen' && in_array($item['fsCardNo'], $engineerIdsOnLeave)) {
+                $statusCounts['Absen']--;
+            }
+        }
+
+        return response()->json($statusCounts);
     }
 }

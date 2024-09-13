@@ -10,7 +10,7 @@ use App\Http\Controllers\EngineerController;
 use App\Http\Controllers\EngineerLeaveController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 Route::get('/ids', [TaskController::class, 'showIds']);
 Route::get('/duration', [TaskController::class, 'taskDuration']);
-Route::get('/absensi', [AbsensiController::class, 'index']);
+Route::get('/api/absensi', [AbsensiController::class, 'index']);
 Route::get('/absensi/data', [AbsensiController::class, 'fetchData'])->name('absensi.data');
 Route::get('/absensi/data', [AbsensiController::class, 'fetchDataDashboard'])->name('absensi.dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
@@ -72,3 +72,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 Route::get('engineer/dashboard', [EngineerController::class, 'index'])->name('engineer.dashboard')->middleware('auth');
 Route::post('engineer/activities', [EngineerController::class, 'store'])->name('engineer.activities.store')->middleware('auth');
 Route::get('/api/engineer-leaves', [EngineerLeaveController::class, 'index']);
+
+//Chart Js
+Route::get('/api/engineer-tasks', [TaskController::class, 'chartJs']);
+
+// Status Count
+Route::get('/api/status-count', [DashboardController::class, 'statusCount']);

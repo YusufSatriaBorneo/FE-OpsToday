@@ -27,3 +27,8 @@
     color: #6c757d;
     margin-top: 0.5rem;
 }
+@font-face {
+    font-family: 'NamaFont';
+    src: url('path/to/nama-font.woff2') format('woff2');
+    font-display: swap;
+}
