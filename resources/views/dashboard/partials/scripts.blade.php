@@ -22,7 +22,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var myCarousel = new bootstrap.Carousel(document.getElementById('engineerTaskSlider'), {
-            interval: 10000,
+            interval: 20000,
             wrap: true
         });
     });
@@ -35,6 +35,7 @@
         updateEngineerOnLeaveCount();
     });
     let engineerLeaves = [];
+
     function refreshEngineerOnLeave() {
         fetch('/api/engineer-leaves')
             .then(response => response.json())
@@ -42,7 +43,7 @@
                 engineerLeaves = data;
                 const tbody = document.getElementById('engineer-leave-content');
                 tbody.innerHTML = ''; // Kosongkan konten sebelum menambahkan data baru
-                
+
                 if (data.length === 0) {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -78,25 +79,25 @@
 
 <!-- Fungsi refresh Absensi -->
 <script>
-  function formatTimeToIndonesia(time) {
-    if (!time) return ''; // Jika waktu tidak ada, kembalikan string kosong
+    function formatTimeToIndonesia(time) {
+        if (!time) return ''; // Jika waktu tidak ada, kembalikan string kosong
 
-    // Mengubah waktu dari UTC ke UTC+7 (Asia/Jakarta)
-    const utcDate = new Date(time); // Waktu dari API (dalam UTC)
-    
-    // Menambahkan offset +7 jam secara manual
-    utcDate.setHours(utcDate.getHours() - 8);
+        // Mengubah waktu dari UTC ke UTC+7 (Asia/Jakarta)
+        const utcDate = new Date(time); // Waktu dari API (dalam UTC)
 
-    // Format waktu ke string sesuai zona waktu Jakarta
-    const options = {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false // Menggunakan format 24 jam
-    };
+        // Menambahkan offset +7 jam secara manual
+        utcDate.setHours(utcDate.getHours() - 8);
 
-    return utcDate.toLocaleTimeString('id-ID', options); // Format dengan `toLocaleTimeString`
-}
+        // Format waktu ke string sesuai zona waktu Jakarta
+        const options = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false // Menggunakan format 24 jam
+        };
+
+        return utcDate.toLocaleTimeString('id-ID', options); // Format dengan `toLocaleTimeString`
+    }
     document.addEventListener('DOMContentLoaded', function() {
         refreshAbsensiData();
     });
@@ -149,27 +150,28 @@
     }
 
     function getBadge(item) {
-    let badge = '';
-    
-    // Cek apakah engineer sedang cuti
-    const isOnLeave = item.isOnLeave;
-    // Mengecek apakah isOnProgress ada dan bernilai true atau 1
-    if (isOnLeave) {
-        badge = '<span class="badge bg-label-secondary rounded-pill">Cuti</span>';
-    } else if (item.isOnProgress) { 
-        badge = '<span class="badge bg-label-info rounded-pill">On Remote</span>';
-    } else if (item.status1 === 'Hadir') {
-        badge = '<span class="badge bg-label-success rounded-pill">Available</span>';
-    } else if (item.status1 === 'Keluar') {
-        badge = '<span class="badge bg-label-warning rounded-pill">Out of Office</span>';
-    } else {
-        badge = '<span class="badge bg-label-danger rounded-pill">Not Available</span>';
+        let badge = '';
+
+        // Cek apakah engineer sedang cuti
+        const isOnLeave = item.isOnLeave;
+        // Mengecek apakah isOnProgress ada dan bernilai true atau 1
+        if (isOnLeave) {
+            badge = '<span class="badge bg-label-secondary rounded-pill">Cuti</span>';
+        } else if (item.isOnProgress) {
+            badge = '<span class="badge bg-label-info rounded-pill">On Remote</span>';
+        } else if (item.status1 === 'Hadir') {
+            badge = '<span class="badge bg-label-success rounded-pill">Available</span>';
+        } else if (item.status1 === 'Keluar') {
+            badge = '<span class="badge bg-label-warning rounded-pill">Out of Office</span>';
+        } else {
+            badge = '<span class="badge bg-label-danger rounded-pill">Not Available</span>';
+        }
+        return badge;
     }
-    return badge;
-}
 
     // Refresh setiap 30 detik, sesuaikan dengan kebutuhan Anda
-    setInterval(refreshAbsensiData, 3000); 
+    setInterval(refreshAbsensiData, 3000);
+
     function formatDate(dateString) {
         const [year, month, day] = dateString.split('-');
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -179,60 +181,71 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    fetchEngineerTasks();
-    
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchEngineerTasks();
+        setInterval(fetchEngineerTasks, 3000);
 
-function fetchEngineerTasks() {
-    fetch('/api/engineer-tasks')
-        .then(response => response.json())
-        .then(data => {
-            // Urutkan data berdasarkan task_count secara menurun
-            data.sort((a, b) => a.task_count - b.task_count);
+    });
+    let engineerTasksChart; // Variabel untuk menyimpan instance chart
+    function fetchEngineerTasks() {
+        fetch('/api/engineer-tasks')
+            .then(response => response.json())
+            .then(data => {
+                // Urutkan data berdasarkan task_count secara menurun
+                data.sort((a, b) => a.task_count - b.task_count);
 
-            const labels = data.map(task => task.engineer_name);
-            const taskCounts = data.map(task => task.task_count);
-            const backgroundColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)');
-            const borderColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
+                const labels = data.map(task => task.engineer_name);
+                const taskCounts = data.map(task => task.task_count);
+                const backgroundColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)');
+                const borderColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
 
-            const ctx = document.getElementById('engineerTasksChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Not Started Tasks',
-                        data: taskCounts,
-                        backgroundColor: backgroundColors,
-                        borderColor: borderColors,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        datalabels: {
-                            anchor: 'end', // Menempatkan label di akhir bar
-                            align: 'top',  // Menyelaraskan label di bagian atas bar
-                            formatter: (value) => value, // Menampilkan nilai yang ada
-                            color: 'black', // Warna teks label
-                            font: {
-                                weight: 'bold' // Membuat teks lebih tebal
+                const ctx = document.getElementById('engineerTasksChart').getContext('2d');
+
+                // Jika chart sudah ada, hancurkan instance sebelumnya
+                if (engineerTasksChart) {
+                    engineerTasksChart.data.labels = labels;
+                    engineerTasksChart.data.datasets[0].data = taskCounts;
+                    engineerTasksChart.data.datasets[0].backgroundColor = backgroundColors;
+                    engineerTasksChart.data.datasets[0].borderColor = borderColors;
+                    engineerTasksChart.update();
+                } else {
+                    // Jika chart belum ada, buat chart baru
+                    engineerTasksChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Not Started Tasks',
+                                data: taskCounts,
+                                backgroundColor: backgroundColors,
+                                borderColor: borderColors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                datalabels: {
+                                    anchor: 'end', // Menempatkan label di akhir bar
+                                    align: 'top', // Menyelaraskan label di bagian atas bar
+                                    formatter: (value) => value, // Menampilkan nilai yang ada
+                                    color: 'black', // Warna teks label
+                                    font: {
+                                        weight: 'bold' // Membuat teks lebih tebal
+                                    }
+                                }
                             }
-                        }
-                    }
-                },
-                plugins: [ChartDataLabels] // Tambahkan plugin `ChartDataLabels` ke chart
-            });
-        })
-        .catch(error => console.error('Error fetching engineer tasks:', error));
-}
-setInterval(fetchEngineerTasks, 3000);
+                        },
+                        plugins: [ChartDataLabels] // Tambahkan plugin `ChartDataLabels` ke chart
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching engineer tasks:', error));
+    }
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
