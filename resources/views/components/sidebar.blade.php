@@ -58,6 +58,14 @@
             </a>
         </li>
 
+        <li class="menu-item {{ Request::routeIs('admin.engineer.extra-miles') ? 'active open' : '' }}">
+            <a href="{{ route('admin.engineer.extra-miles') }}" class="menu-link">
+                <i class="menu-icon tf-icons ri-timer-flash-line"></i>
+                <div data-i18n="Extra Miles Contribution">Extra Miles Contribution</div>
+            </a>
+        </li>
+
+
         <!-- Logout -->
         <li class="menu-item">
             <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
