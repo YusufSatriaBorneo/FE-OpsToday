@@ -63,7 +63,7 @@
             })
             .catch(error => console.error('Error refreshing Engineer On Leave:', error));
     }
-    setInterval(refreshEngineerOnLeave, 3000); // Refresh setiap 3 detik
+    setInterval(refreshEngineerOnLeave, 30000000); // Refresh setiap 3 detik
 
     function updateEngineerOnLeaveCount() {
         fetch('/api/engineer-leaves')
@@ -127,7 +127,7 @@
                                         <div class="avatar avatar-sm me-3">
                                             <img src="../assets/img/avatars/1.png" alt="Avatar" class="rounded-circle" loading="lazy" />
                                         </div>
-                                        <small class="text-truncate">${item.fsName || 'N/A'}</small>
+                                        <small class="text-truncate"><a href="https://teams.microsoft.com/l/chat/0/0?users=Yusuf.Borneo@kpc.co.id" target="_blank">${item.fsName || 'N/A'}</a></small>
                                     </div>
                                                                     <p class="card-text mb-2">
                                     ${item.status1 === 'Absen' ? 
@@ -264,4 +264,31 @@
             .catch(error => console.error('Error fetching status counts:', error));
     }
 </script>
+<script>
+        function updateClock() {
+            const now = new Date();
+            const gmtPlus8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+            
+            const hours = String(gmtPlus8.getUTCHours()).padStart(2, '0');
+            const minutes = String(gmtPlus8.getUTCMinutes()).padStart(2, '0');
+            const seconds = String(gmtPlus8.getUTCSeconds()).padStart(2, '0');
+            
+            const day = String(gmtPlus8.getUTCDate()).padStart(2, '0');
+            const month = String(gmtPlus8.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = gmtPlus8.getUTCFullYear();
+            
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayOfWeek = daysOfWeek[gmtPlus8.getUTCDay()];
+            
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            const dateString = `${day}-${month}-${year}`;
+            
+            document.getElementById('digital-clock').textContent = timeString;
+            document.getElementById('current-date').textContent = dateString;
+            document.getElementById('current-day').textContent = dayOfWeek;
+        }
+        
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call to display clock immediately
+    </script>
 @endpush

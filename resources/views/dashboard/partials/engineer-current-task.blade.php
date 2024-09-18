@@ -35,6 +35,51 @@
                             </div>
                         </div>
                     </div>
+                    <div class="carousel-item">
+                            <div class="card overflow-hidden">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-0">Engineer On Leave</h5>
+                                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Engineer</th>
+                                                    <th>Leave Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="engineer-leave-content">
+                                                <!-- Data akan dimuat oleh JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="card overflow-hidden">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-0">Extra Miles Contribution</h5>
+                                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Engineer</th>
+                                                    <th>Count of Extra Miles</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($extraMilesData as $data)
+                                                <tr>
+                                                    <td>{{ $data->engineer_name }}</td>
+                                                    <td>{{ $data->extra_miles_count }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#engineerTaskSlider" data-bs-slide="prev">

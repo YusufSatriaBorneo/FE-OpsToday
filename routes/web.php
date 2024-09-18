@@ -33,6 +33,7 @@ Route::get('/api/absensi', [AbsensiController::class, 'index']);
 Route::get('/absensi/data', [AbsensiController::class, 'fetchData'])->name('absensi.data');
 Route::get('/absensi/data', [AbsensiController::class, 'fetchDataDashboard'])->name('absensi.dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/attendance/timeliness', [AbsensiController::class, 'calculateTimeliness']);
 Route::get('/dashboard/content', [DashboardController::class, 'getDashboardContent'])->name('dashboard.content');
 
 //Auth
@@ -57,6 +58,8 @@ Route::prefix('admin')->middleware(['auth', 'Admin'])->group(function () {
     Route::post('/engineer-leaves', [AdminController::class, 'engineerLeavesStore'])->name('admin.engineer_leaves.store');
     Route::get('/engineer-onprogress', [AdminController::class, 'engineerOnProgressView'])->name('admin.engineer.onprogress');
     Route::delete('/admin/engineer-onprogress/{id}', [AdminController::class, 'destroyEngineerOnProgress'])->name('engineerOnProgress.destroy');
+    Route::get('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesView'])->name('admin.engineer.extra-miles');
+    Route::post('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesStore'])->name('admin.engineer_extra_miles.store');
 });
 Route::get('/unauthorized', function () {
     return view('unauthorize');

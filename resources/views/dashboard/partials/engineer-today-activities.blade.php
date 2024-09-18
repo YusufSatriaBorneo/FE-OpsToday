@@ -95,12 +95,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- Card baru pertama -->
+                <!-- Card baru pertama Fungsi untuk menampilkan engineer yang sedang on leave dan extra miles contribution
                 <div class="col-md-6 col-lg-6">
-                    <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah -->
+                    <div class="card mb-4"> 
                         <div class="card-body">
                             <h5 class="card-title mb-0">Engineer On Leave</h5>
-                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> <!-- Membatasi tinggi dan menambahkan scroll -->
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> 
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -117,43 +117,33 @@
                     </div>
                 </div>
 
-                <!-- Card baru kedua -->
+                
                 <div class="col-md-6 col-lg-6">
-                    <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah -->
+                    <div class="card mb-4"> 
                         <div class="card-body">
-                            <h5 class="card-title mb-0">Extra Miles Engineer</h5>
-                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> <!-- Membatasi tinggi dan menambahkan scroll -->
+                            <h5 class="card-title mb-0">Extra Miles Contribution</h5>
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"> 
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>Engineer</th>
-                                            <th>Activity</th>
+                                            <th>Count of Extra Miles</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($extraMilesData as $data)
                                         <tr>
-                                            <td>Oby</td>
-                                            <td>Task at GOR</td>
+                                            <td>{{ $data->engineer_name }}</td>
+                                            <td>{{ $data->extra_miles_count }}</td>
                                         </tr>
-                                        <tr>
-                                            <td>Oby</td>
-                                            <td>Task at GOR</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Oby</td>
-                                            <td>Task at GOR</td>
-                                        </tr>
-                                          <tr>
-                                            <td>Oby</td>
-                                            <td>Task at GOR</td>
-                                        </tr>
-                                        <!-- Tambahkan data lainnya di sini -->
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
+                 -->
             </div>
             <!--
             <div class="row gy-4">  Menambahkan row untuk mengatur card dalam satu baris

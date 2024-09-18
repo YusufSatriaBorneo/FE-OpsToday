@@ -7,6 +7,7 @@ use App\Mail\TaskOverloadMail;
 use App\Models\EngineerActivities;
 use App\Models\EngineerLeave;
 use App\Models\EngineerTask;
+use App\Models\ExtraMiles;
 use App\Models\User;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 use Illuminate\Support\Facades\Http;
@@ -36,7 +37,7 @@ class DashboardController extends Controller
             ->whereYear('created_at', $currentYear)
             ->count();
         $inProgressTasksCount = EngineerTask::where('status', 'Not Started')->count();
-        
+
         // Ambil data dari EngineerLeaves
         $currentDate = Carbon::now()->toDateString();
 
@@ -49,12 +50,18 @@ class DashboardController extends Controller
         // Ambil aktivitas engineer yang sedang berlangsung
         $activities = EngineerActivities::all(); // Ambil semua aktivitas engineer
         // Hitung Engineer of the Day
-        $engineerOfTheDay = EngineerActivities::select('engineer_id', DB::raw('COUNT(*) as count'))
-            ->where('status', 'Completed')
-            ->whereDate('completion_time', Carbon::yesterday())
-            ->groupBy('engineer_id')
-            ->orderBy('count', 'desc')
-            ->first();
+        $engineerOfTheDay = DB::table(DB::raw('(
+            SELECT engineer_id, 
+                   COUNT(*) as count, 
+                   AVG(TIMESTAMPDIFF(SECOND, created_at, completion_time)) as avg_completion_time
+            FROM engineer_activities
+            WHERE status = "Completed"
+              AND DATE(completion_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+            GROUP BY engineer_id
+        ) as sub'))
+        ->orderBy('avg_completion_time', 'asc')
+        ->orderBy('count', 'desc')
+        ->first();
 
         // Hitung Engineer of the Month
         $engineerOfTheMonth = EngineerActivities::select('engineer_id', DB::raw('COUNT(*) as count'))
@@ -66,7 +73,11 @@ class DashboardController extends Controller
 
         $engineerNames = User::pluck('name', 'engineer_id');
 
-        return view('dashboard.index', compact('topEngineer', 'topTicketCount', 'engineerTicketCount', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'currentMonth'));
+        $extraMilesData = ExtraMiles::select('engineer_name', DB::raw('count(*) as extra_miles_count'))
+        ->groupBy('engineer_name')
+        ->get();
+
+        return view('dashboard.index', compact('topEngineer', 'topTicketCount', 'engineerTicketCount', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'currentMonth', 'extraMilesData'));
     }
     public function getDashboardContent()
     {
