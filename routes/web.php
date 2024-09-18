@@ -10,7 +10,7 @@ use App\Http\Controllers\EngineerController;
 use App\Http\Controllers\EngineerLeaveController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
-
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,10 +29,11 @@ Route::get('/', function () {
 
 Route::get('/ids', [TaskController::class, 'showIds']);
 Route::get('/duration', [TaskController::class, 'taskDuration']);
-Route::get('/absensi', [AbsensiController::class, 'index']);
+Route::get('/api/absensi', [AbsensiController::class, 'index']);
 Route::get('/absensi/data', [AbsensiController::class, 'fetchData'])->name('absensi.data');
 Route::get('/absensi/data', [AbsensiController::class, 'fetchDataDashboard'])->name('absensi.dashboard');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/attendance/timeliness', [AbsensiController::class, 'calculateTimeliness']);
 Route::get('/dashboard/content', [DashboardController::class, 'getDashboardContent'])->name('dashboard.content');
 
 //Auth
@@ -57,6 +58,8 @@ Route::prefix('admin')->middleware(['auth', 'Admin'])->group(function () {
     Route::post('/engineer-leaves', [AdminController::class, 'engineerLeavesStore'])->name('admin.engineer_leaves.store');
     Route::get('/engineer-onprogress', [AdminController::class, 'engineerOnProgressView'])->name('admin.engineer.onprogress');
     Route::delete('/admin/engineer-onprogress/{id}', [AdminController::class, 'destroyEngineerOnProgress'])->name('engineerOnProgress.destroy');
+    Route::get('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesView'])->name('admin.engineer.extra-miles');
+    Route::post('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesStore'])->name('admin.engineer_extra_miles.store');
 });
 Route::get('/unauthorized', function () {
     return view('unauthorize');
@@ -72,3 +75,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 Route::get('engineer/dashboard', [EngineerController::class, 'index'])->name('engineer.dashboard')->middleware('auth');
 Route::post('engineer/activities', [EngineerController::class, 'store'])->name('engineer.activities.store')->middleware('auth');
 Route::get('/api/engineer-leaves', [EngineerLeaveController::class, 'index']);
+
+//Chart Js
+Route::get('/api/engineer-tasks', [TaskController::class, 'chartJs']);
+
+// Status Count
+Route::get('/api/status-count', [DashboardController::class, 'statusCount']);

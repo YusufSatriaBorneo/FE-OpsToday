@@ -29,7 +29,7 @@ class TaskOverloadMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '[Alert] Ops Today: Tickets Exceeding 10',
+            subject: '[Alert] B-Hero Today: Tickets Exceeding 10',
         );
     }
 
@@ -38,7 +38,7 @@ class TaskOverloadMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('[Alert] Ops Today: Tickets Exceeding 10')
+        return $this->subject('[Alert] B-Hero Today: Tickets Exceeding 10')
                     ->view('emails.taskOverload')
                     ->with([
                         'overloadedEngineers' => $this->overloadedEngineers,

@@ -40,7 +40,7 @@ app.get("/", (request, response) => {
 app.get("/api/absence", (request, response) => {
     const query = `
         SELECT * FROM vwAbsensiIT
-        WHERE fsCardNo IN ('19775','z121130','18698','z110030','Z110780','Z111086','z119163', 
+        WHERE fsCardNo IN ('z121130','18698','z110030','Z110780','Z111086','z119163', 
             'Z54497', 'Z67254', 'Z80469', 'Z109553', 'z124187', 'Z119238', 'Z100665','z124187',
             '18992', '19525', '19721', 'Z125602', 'Z126397', 'Z126457','Z126577','19820','19820')
         ORDER BY fsName

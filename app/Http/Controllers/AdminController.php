@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EngineerActivities;
 use App\Models\EngineerLeave;
 use App\Models\EngineerTask;
+use App\Models\ExtraMiles;
 use App\Models\TicketDuration;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -208,5 +209,28 @@ class AdminController extends Controller
         $engineerOnProgress = EngineerActivities::findOrFail($id);
         $engineerOnProgress->delete();
         return redirect()->route('admin.engineer.onprogress')->with('success', 'Engineer on progress deleted successfully.');
+    }
+    public function engineerExtraMilesView()
+    {
+        $users = User::all();
+        $engineerExtraMiles = ExtraMiles::all();
+        return view('admin.engineer_extra_miles', compact('users', 'engineerExtraMiles'));
+    }
+    public function engineerExtraMilesStore(Request $request)
+    {
+        $request->validate([
+            'engineer_id' => 'required|exists:users,engineer_id',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'activity_name' => 'required|string',
+        ]);
+        $extraMiles = new ExtraMiles;
+        $extraMiles->engineer_id = $request->engineer_id;
+        $extraMiles->engineer_name = $request->engineer_name;
+        $extraMiles->start_date = $request->start_date;
+        $extraMiles->end_date = $request->end_date;
+        $extraMiles->activity_name = $request->activity_name;
+        $extraMiles->save();
+        return redirect()->route('admin.engineer_extra_miles')->with('success', 'Engineer extra miles added successfully.');
     }
 }

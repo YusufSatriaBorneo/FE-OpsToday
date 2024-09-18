@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\FetchAttendanceData;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Http;
@@ -69,8 +70,8 @@ class Kernel extends ConsoleKernel
                 Log::info('Sending email to recipients.');
 
                 // Kirim email ke beberapa penerima
-                Mail::to(['Afif.Darmawan@kpc.co.id', 'Amos.Silamba@kpc.co.id', 'Help.Desk@kpc.co.id'])
-                    ->cc(['Yundri.Saputra@kpc.co.id', 'Bayu.Adhitya@kpc.co.id', 'DiTechInfraServiceShift@kpc.co.id', 'Rudani@kpc.co.id'])
+                Mail::to(['Amos.Silamba@kpc.co.id', 'DiTechInfraB-HeroTeam@kpc.co.id','Copier.Support@kpc.co.id'])
+                    ->cc(['Bayu.Adhitya@kpc.co.id'])
                     ->send(new TaskOverloadMail($overloadedEngineers));
 
                 // Catat log pengiriman email
@@ -96,6 +97,7 @@ class Kernel extends ConsoleKernel
             file_put_contents(storage_path('logs/laravel.log'), '');
         })->daily();
         $schedule->job(new UpdateTicketStatus())->everyMinute();
+        $schedule->job(new FetchAttendanceData)->everyMinute();
     }
 
     /**
