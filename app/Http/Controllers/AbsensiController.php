@@ -85,10 +85,6 @@ class AbsensiController extends Controller
             // Set waktu ke jam 3 sore pada tanggal yang sama dengan check_in_time
             $threePM = Carbon::parse($snapshot->check_in_time)->setTime(8, 0, 0);
 
-            // Debugging: Log nilai check_in_time dan threePM
-            Log::info('Check-in Time: ' . $checkInTime->format('Y-m-d H:i:s'));
-            Log::info('Three PM: ' . $threePM->format('Y-m-d H:i:s'));
-
             if ($snapshot->status == 'Hadir' && $checkInTime->lessThanOrEqualTo($threePM)) {
                 $timeliness[$snapshot->engineer_id] = 'Tepat Waktu';
             } else {

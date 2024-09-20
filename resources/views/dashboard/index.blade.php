@@ -19,11 +19,18 @@
                             <div class="col-md-4 col-lg-4">
                                 <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah -->
                                     <div class="card-body text-nowrap">
-                                        <h5 class="card-title mb-0 flex-wrap text-nowrap">Congratulations {{ $topEngineer }} 🎉</h5>
+                                        @if($engineerOfTheMonth)
+                                        @php
+                                        $engineerName = $engineerNames[$engineerOfTheMonth->engineer_id] ?? 'Unknown';
+                                        @endphp
+                                        <h5 class="card-title mb-0 flex-wrap text-nowrap">Congratulations {{ $engineerName }}</h5>
                                         <p class="mb-2">You've Completed</p>
                                         <h4 class="text-primary mb-0">{{ $topTicketCount }} Tickets</h4>
                                         <p class="mb-2">and You've excelled as the best engineer this month 🌟</p>
                                         <a href="javascript:;" class="btn btn-sm btn-primary">View</a>
+                                        @else
+                                        <p>No Data for engineer of the month</p>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -40,18 +47,21 @@
                                         <p class="mb-2">and You've been the top engineer today 🌟</p>
                                         <a href="javascript:;" class="btn btn-sm btn-primary">View</a>
                                         <img src="../assets/img/illustrations/trophy.png" class="position-absolute bottom-0 end-0 me-5 mb-5" width="83" alt="view sales" />
+                                        <br>
                                         @else
-                                        <p>No Data</p>
+                                        <p>No Data for engineer of the day</p>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-4 col-lg-4">
-                                <div class="card mb-4 style="height: 100%;"> <!-- Menambahkan mb-4 untuk margin bawah dan h-100 untuk tinggi penuh -->
-                                    <div class="card-body text-center">
-                                        <div id="current-date" style="font-size: 18px;"></div>
-                                        <div id="digital-clock" class="mb-3" style="font-size: 48px; font-weight: bold;"></div>
-                                        <div id="current-day" style="font-size: 18px;"></div>
+                                <div class="card mb-4"> <!-- Menambahkan mb-4 untuk margin bawah dan h-100 untuk tinggi penuh -->
+                                    <div class="card-body text-nowrap">
+                                        <div class="card-body text-center">
+                                            <div id="current-date" style="font-size: 18px;"></div>
+                                            <div id="digital-clock" class="mb-3" style="font-size: 48px; font-weight: bold;"></div>
+                                            <div id="current-day" style="font-size: 18px;"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -163,10 +173,12 @@
                             <div class="col-md-4 col-lg-4">
                                 <div class="card mb-4 h-100"> <!-- Menambahkan mb-4 untuk margin bawah dan h-100 untuk tinggi penuh -->
                                     <div class="card-body text-center">
-                                    <p class="mb-0" >Clock in timeliness</p>
-                                    <br>
-                                    <br>
-                                    <h5 class="mb-0" style="font-size: 48px; font-weight: bold;">94%</h5>
+                                        <p class="mb-0" class="mb-0 text-muted-custom">Clock in timeliness</p>
+                                        <br>
+                                        <br>
+                                        <h5 class="mb-0 text-muted-custom" style="font-size: 48px; font-weight: bold;">{{ $clockInTimeliness }}%</h5>
+                                        <p class="mt-2"></p>
+                                        <p>On Time: {{ $onTimeCount }} | Late: {{ $lateCount }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +230,7 @@
                                                                 <table class="table table-striped">
                                                                     <thead>
                                                                         <tr>
-                                                                            <th>Engineer</th>
+                                                                            <th>Engineer On Leave</th>
                                                                             <th>Leave Date</th>
                                                                         </tr>
                                                                     </thead>
@@ -239,18 +251,23 @@
                                                                     <thead>
                                                                         <tr>
                                                                             <th>Engineer</th>
-                                                                            <th>Count of Extra Miles</th>
+                                                                            <th>Start Date</th>
+                                                                            <th>End Date</th>
+                                                                            <th>Activity Name</th>
+
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
                                                                         @forelse($extraMilesData as $data)
                                                                         <tr>
                                                                             <td>{{ $data->engineer_name }}</td>
-                                                                            <td>{{ $data->extra_miles_count }}</td>
+                                                                            <td>{{ $data->start_date }}</td>
+                                                                            <td>{{ $data->end_date }}</td>
+                                                                            <td>{{ $data->activity_name }}</td>
                                                                         </tr>
                                                                         @empty
                                                                         <tr>
-                                                                            <td colspan="2" class="text-center">No engineer on leave</td>
+                                                                            <td colspan="2" class="text-center">No data</td>
                                                                         </tr>
                                                                         @endforelse
                                                                     </tbody>

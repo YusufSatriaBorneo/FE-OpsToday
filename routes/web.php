@@ -59,7 +59,8 @@ Route::prefix('admin')->middleware(['auth', 'Admin'])->group(function () {
     Route::get('/engineer-onprogress', [AdminController::class, 'engineerOnProgressView'])->name('admin.engineer.onprogress');
     Route::delete('/admin/engineer-onprogress/{id}', [AdminController::class, 'destroyEngineerOnProgress'])->name('engineerOnProgress.destroy');
     Route::get('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesView'])->name('admin.engineer.extra-miles');
-    Route::post('/engineer-extra-miles', [AdminController::class, 'engineerExtraMilesStore'])->name('admin.engineer_extra_miles.store');
+    Route::post('/engineer-extra-miles/store', [AdminController::class, 'engineerExtraMilesStore'])->name('admin.engineer_extra_miles.store');
+    Route::delete('/engineer-extra-miles/{id}', [AdminController::class, 'destroyEngineerExtraMiles'])->name('admin.engineer_extra_miles.destroy');
 });
 Route::get('/unauthorized', function () {
     return view('unauthorize');

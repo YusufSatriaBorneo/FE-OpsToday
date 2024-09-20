@@ -220,17 +220,18 @@ class AdminController extends Controller
     {
         $request->validate([
             'engineer_id' => 'required|exists:users,engineer_id',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after_or_equal:start_date',
             'activity_name' => 'required|string',
         ]);
-        $extraMiles = new ExtraMiles;
-        $extraMiles->engineer_id = $request->engineer_id;
-        $extraMiles->engineer_name = $request->engineer_name;
-        $extraMiles->start_date = $request->start_date;
-        $extraMiles->end_date = $request->end_date;
-        $extraMiles->activity_name = $request->activity_name;
-        $extraMiles->save();
-        return redirect()->route('admin.engineer_extra_miles')->with('success', 'Engineer extra miles added successfully.');
+
+        ExtraMiles::create($request->all());
+
+        return redirect()->route('admin.engineer.extra-miles')->with('success', 'Engineer extra miles added successfully.');
+        // dd($request->all());
+    }
+    public function destroyEngineerExtraMiles($id)
+    {
+        $engineerExtraMiles = ExtraMiles::findOrFail($id);
+        $engineerExtraMiles->delete();
+        return redirect()->route('admin.engineer.extra-miles')->with('success', 'Engineer extra miles deleted successfully.');
     }
 }
