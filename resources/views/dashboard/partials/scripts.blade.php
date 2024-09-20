@@ -63,7 +63,7 @@
             })
             .catch(error => console.error('Error refreshing Engineer On Leave:', error));
     }
-    setInterval(refreshEngineerOnLeave, 30000000); // Refresh setiap 3 detik
+    setInterval(refreshEngineerOnLeave, 43200000); // Refresh setiap 3 detik
 
     function updateEngineerOnLeaveCount() {
         fetch('/api/engineer-leaves')
@@ -74,7 +74,7 @@
             })
             .catch(error => console.error('Error updating engineer on leave count:', error));
     }
-    setInterval(updateEngineerOnLeaveCount, 3000); // Refresh setiap 3 detik
+    setInterval(updateEngineerOnLeaveCount, 600000); // Refresh setiap 3 detik
 </script>
 
 <!-- Fungsi refresh Absensi -->
@@ -170,7 +170,7 @@
     }
 
     // Refresh setiap 30 detik, sesuaikan dengan kebutuhan Anda
-    setInterval(refreshAbsensiData, 3000);
+    setInterval(refreshAbsensiData, 60000);
 
     function formatDate(dateString) {
         const [year, month, day] = dateString.split('-');
@@ -183,10 +183,11 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchEngineerTasks();
-        setInterval(fetchEngineerTasks, 3000);
-
+        setInterval(fetchEngineerTasks, 60000);
     });
+
     let engineerTasksChart; // Variabel untuk menyimpan instance chart
+
     function fetchEngineerTasks() {
         fetch('/api/engineer-tasks')
             .then(response => response.json())
@@ -195,18 +196,16 @@
                 data.sort((a, b) => a.task_count - b.task_count);
 
                 const labels = data.map(task => task.engineer_name);
-                const taskCounts = data.map(task => task.task_count);
-                const backgroundColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)');
-                const borderColors = taskCounts.map(count => count > 10 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
+                const notStartedTasks = data.map(task => task.task_count <= 10 ? task.task_count : 0);
+                const maxTaskLimitReached = data.map(task => task.task_count > 10 ? task.task_count : 0);
 
                 const ctx = document.getElementById('engineerTasksChart').getContext('2d');
 
                 // Jika chart sudah ada, hancurkan instance sebelumnya
                 if (engineerTasksChart) {
                     engineerTasksChart.data.labels = labels;
-                    engineerTasksChart.data.datasets[0].data = taskCounts;
-                    engineerTasksChart.data.datasets[0].backgroundColor = backgroundColors;
-                    engineerTasksChart.data.datasets[0].borderColor = borderColors;
+                    engineerTasksChart.data.datasets[0].data = notStartedTasks;
+                    engineerTasksChart.data.datasets[1].data = maxTaskLimitReached;
                     engineerTasksChart.update();
                 } else {
                     // Jika chart belum ada, buat chart baru
@@ -215,12 +214,20 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Not Started Tasks',
-                                data: taskCounts,
-                                backgroundColor: backgroundColors,
-                                borderColor: borderColors,
-                                borderWidth: 1
-                            }]
+                                    label: 'Not Started Tasks',
+                                    data: notStartedTasks,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Max Task Limit Reached',
+                                    data: maxTaskLimitReached,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
                         },
                         options: {
                             scales: {
@@ -232,7 +239,7 @@
                                 datalabels: {
                                     anchor: 'end', // Menempatkan label di akhir bar
                                     align: 'top', // Menyelaraskan label di bagian atas bar
-                                    formatter: (value) => value, // Menampilkan nilai yang ada
+                                    formatter: (value) => value > 0 ? value : '', // Menampilkan nilai yang lebih besar dari 0
                                     color: 'black', // Warna teks label
                                     font: {
                                         weight: 'bold' // Membuat teks lebih tebal
@@ -250,7 +257,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         fetchStatusCounts();
-        setInterval(fetchStatusCounts, 3000); // Refresh setiap 30 detik
+        setInterval(fetchStatusCounts, 60000); // Refresh setiap 30 detik
     });
 
     function fetchStatusCounts() {
@@ -265,30 +272,30 @@
     }
 </script>
 <script>
-        function updateClock() {
-            const now = new Date();
-            const gmtPlus8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
-            
-            const hours = String(gmtPlus8.getUTCHours()).padStart(2, '0');
-            const minutes = String(gmtPlus8.getUTCMinutes()).padStart(2, '0');
-            const seconds = String(gmtPlus8.getUTCSeconds()).padStart(2, '0');
-            
-            const day = String(gmtPlus8.getUTCDate()).padStart(2, '0');
-            const month = String(gmtPlus8.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
-            const year = gmtPlus8.getUTCFullYear();
-            
-            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const dayOfWeek = daysOfWeek[gmtPlus8.getUTCDay()];
-            
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            const dateString = `${day}-${month}-${year}`;
-            
-            document.getElementById('digital-clock').textContent = timeString;
-            document.getElementById('current-date').textContent = dateString;
-            document.getElementById('current-day').textContent = dayOfWeek;
-        }
-        
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call to display clock immediately
-    </script>
+    function updateClock() {
+        const now = new Date();
+        const gmtPlus8 = new Date(now.getTime() + (8 * 60 * 60 * 1000));
+
+        const hours = String(gmtPlus8.getUTCHours()).padStart(2, '0');
+        const minutes = String(gmtPlus8.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(gmtPlus8.getUTCSeconds()).padStart(2, '0');
+
+        const day = String(gmtPlus8.getUTCDate()).padStart(2, '0');
+        const month = String(gmtPlus8.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = gmtPlus8.getUTCFullYear();
+
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const dayOfWeek = daysOfWeek[gmtPlus8.getUTCDay()];
+
+        const timeString = `${hours}:${minutes}:${seconds}`;
+        const dateString = `${day}-${month}-${year}`;
+
+        document.getElementById('digital-clock').textContent = timeString;
+        document.getElementById('current-date').textContent = dateString;
+        document.getElementById('current-day').textContent = dayOfWeek;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock(); // Initial call to display clock immediately
+</script>
 @endpush

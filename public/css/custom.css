@@ -32,3 +32,24 @@
     src: url('path/to/nama-font.woff2') format('woff2');
     font-display: swap;
 }
+.text-muted-custom {
+    color: #6c757d; /* Warna abu-abu yang lebih lembut */
+}
+.navbar-logo {
+    height: 80px; /* Atur tinggi gambar sesuai kebutuhan */
+    width: auto; /* Biarkan lebar otomatis untuk menjaga rasio aspek */
+    position: relative;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body {
+    flex: 1;
+}
+
+.card.mb-4.h-100 {
+    height: 90px;
+}

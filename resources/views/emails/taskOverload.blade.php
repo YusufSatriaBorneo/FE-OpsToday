@@ -339,7 +339,7 @@
                                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td> <a href="http://172.16.3.81:5000/dashboard" target="_blank">Link To Ops Today</a> </td>
+                                                            <td> <a href="http://172.16.3.81:5000/dashboard" target="_blank">Link To B-Hero Apps</a> </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -349,7 +349,6 @@
                                 </table>
                                 <p>Please review and complete the ticket.</p>
                                 <p>Regards,</p>
-                                <p>Team DevOps Engineer</p>
                             </td>
                         </tr>
 

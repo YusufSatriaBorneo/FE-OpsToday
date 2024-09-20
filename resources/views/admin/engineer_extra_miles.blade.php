@@ -4,11 +4,11 @@
 
 @section('content')
 <div class="container mt-5">
-@if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     @endif
     <div class="card">
         <div class="card-body">
@@ -26,11 +26,11 @@
                             </div>
                             <div class="modal-body">
                                 <div class="mb-3">
-                                <label for="engineer_id" class="form-label">Nama</label>
+                                    <label for="engineer_id" class="form-label">Nama</label>
                                     <select class="form-control" id="engineer_id" name="engineer_id" required>
                                         <option value="">Pilih Nama</option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->engineer_id }}" data-name="{{ $user->name }}">{{ $user->name }}</option>
+                                        <option value="{{ $user->engineer_id }}" data-name="{{ $user->name }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -65,16 +65,24 @@
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Activity Name</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach($engineerExtraMiles as $engineerExtraMile)     
+                        @foreach($engineerExtraMiles as $engineerExtraMile)
                         <tr>
                             <td>{{ $engineerExtraMile->engineer_id }}</td>
                             <td>{{ $engineerExtraMile->engineer_name }}</td>
                             <td>{{ $engineerExtraMile->start_date }}</td>
                             <td>{{ $engineerExtraMile->end_date }}</td>
                             <td>{{ $engineerExtraMile->activity_name }}</td>
+                            <td>
+                                <form action="{{ route('admin.engineer_extra_miles.destroy', $engineerExtraMile->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -84,20 +92,12 @@
     </div>
 </div>
 <script>
-     document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         var today = new Date().toISOString().split('T')[0];
         var startDateInput = document.getElementById('start_date');
         var endDateInput = document.getElementById('end_date');
         var engineerSelect = document.getElementById('engineer_id');
         var engineerNameInput = document.getElementById('engineer_name');
-
-        startDateInput.setAttribute('min', today);
-        endDateInput.setAttribute('min', today);
-
-        startDateInput.addEventListener('change', function() {
-            var startDate = startDateInput.value;
-            endDateInput.setAttribute('min', startDate);
-        });
 
         engineerSelect.addEventListener('change', function() {
             var selectedOption = engineerSelect.options[engineerSelect.selectedIndex];
