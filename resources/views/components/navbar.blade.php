@@ -4,8 +4,8 @@
             <i class="ri-menu-fill ri-24px"></i>
         </a>
     </div>
-    <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-        <h2>B-Hero</h2>
+    <div class="navbar-nav-right d-flex align-items-center justify-content-center" id="navbar-collapse">
+        <img src="{{ asset('assets/img/hero/1.png') }}" alt="B-Hero Logo" class="navbar-logo" loading="eager" style="position: center; top: 10px;">
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">

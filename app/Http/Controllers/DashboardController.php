@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Mail\TaskOverloadMail;
 use App\Models\EngineerActivities;
+use App\Models\EngineerAttendanceSnapshot;
 use App\Models\EngineerLeave;
 use App\Models\EngineerTask;
 use App\Models\ExtraMiles;
@@ -44,6 +45,8 @@ class DashboardController extends Controller
 
         // Dapatkan nama bulan saat ini
         $currentMonth = Carbon::now()->format('F');
+        $lastMonth = Carbon::now()->subMonth()->month;
+        $lastYear = Carbon::now()->subMonth()->year;
 
         $engineers = User::all(); // Ambil semua engineer
 
@@ -59,25 +62,81 @@ class DashboardController extends Controller
               AND DATE(completion_time) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
             GROUP BY engineer_id
         ) as sub'))
-        ->orderBy('avg_completion_time', 'asc')
-        ->orderBy('count', 'desc')
-        ->first();
+            ->orderBy('avg_completion_time', 'asc')
+            ->orderBy('count', 'desc')
+            ->first();
 
         // Hitung Engineer of the Month
-        $engineerOfTheMonth = EngineerActivities::select('engineer_id', DB::raw('COUNT(*) as count'))
-            ->where('status', 'Completed')
-            ->whereMonth('completion_time', Carbon::now()->month)
-            ->groupBy('engineer_id')
+        $engineerOfTheMonth = DB::table(DB::raw('(
+            SELECT engineer_id, 
+                   COUNT(*) as count, 
+                   AVG(TIMESTAMPDIFF(SECOND, created_at, completion_time)) as avg_completion_time
+            FROM engineer_activities
+            WHERE status = "Completed"
+              AND MONTH(completion_time) = ?
+              AND YEAR(completion_time) = ?
+            GROUP BY engineer_id
+        ) as sub'))
+            ->setBindings([$lastMonth, $lastYear])
+            ->orderBy('avg_completion_time', 'asc')
             ->orderBy('count', 'desc')
             ->first();
 
         $engineerNames = User::pluck('name', 'engineer_id');
 
-        $extraMilesData = ExtraMiles::select('engineer_name', DB::raw('count(*) as extra_miles_count'))
-        ->groupBy('engineer_name')
-        ->get();
+        $extraMilesData = ExtraMiles::all();
 
-        return view('dashboard.index', compact('topEngineer', 'topTicketCount', 'engineerTicketCount', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'currentMonth', 'extraMilesData'));
+        // Ambil tanggal hari ini
+        $today = Carbon::today();
+
+        // Daftar engineer_id yang akan dikecualikan
+        $excludedEngineerIds = ['Z126457', 'Z126397', 'Z126577', 'Z67254'];
+
+        // Ambil data absensi hari ini
+        $snapshots = DB::table('engineer_attendance_snapshots')
+            ->whereDate('created_at', $today)
+            ->whereNotIn('engineer_id', $excludedEngineerIds)
+            ->get();
+
+        // Lakukan perhitungan timeliness
+        $onTimeCount = 0;
+        $lateCount = 0;
+
+        foreach ($snapshots as $snapshot) {
+            // Format check_in_time menjadi hanya jam dan menit
+            $checkInTime = Carbon::parse($snapshot->check_in_time);
+
+            // Set waktu ke jam 8 pagi pada tanggal yang sama dengan check_in_time
+            $eightAM = Carbon::parse($snapshot->check_in_time)->setTime(8, 0, 0);
+
+            if ($snapshot->status == 'Hadir' && $checkInTime->lessThanOrEqualTo($eightAM)) {
+                $onTimeCount++;
+            } else {
+                $lateCount++;
+            }
+        }
+
+        // Hitung total engineer yang hadir hari ini
+        $totalCount = $onTimeCount + $lateCount;
+
+        // Hitung persentase ketepatan waktu
+        $clockInTimeliness = $totalCount > 0 ? round(($onTimeCount / $totalCount) * 100, 2) : 0;
+
+        // Hitung jumlah engineer yang hadir sebelum pukul 8.00 pagi
+        $onTimeCount = EngineerAttendanceSnapshot::whereDate('check_in_time', $today)
+            ->whereTime('check_in_time', '<=', '08:00:00')
+            ->whereNotIn('engineer_id', $excludedEngineerIds)
+            ->count();
+
+        // Hitung total engineer yang hadir hari ini
+        $totalCount = EngineerAttendanceSnapshot::whereDate('check_in_time', $today)
+            ->whereNotIn('engineer_id', $excludedEngineerIds)
+            ->count();
+
+        // Hitung persentase ketepatan waktu
+        $clockInTimeliness = $totalCount > 0 ? round(($onTimeCount / $totalCount) * 100, 2) : 0;
+
+        return view('dashboard.index', compact('topEngineer', 'topTicketCount', 'engineerTicketCount', 'activities', 'engineerOfTheDay', 'engineerOfTheMonth', 'engineerNames', 'completedTasksCount', 'inProgressTasksCount', 'currentMonth', 'extraMilesData', 'clockInTimeliness', 'onTimeCount', 'lateCount','engineerOfTheMonth'));
     }
     public function getDashboardContent()
     {
